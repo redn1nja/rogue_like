@@ -30,7 +30,7 @@ class Room:
         self.item = item
 
     def get_details(self):
-        print(f'{self.name}' + '\n' + '----------------' +'\n'+ f'{self.description}')
+        print(f'{self.name}' + '\n' + '--------------------' +'\n'+ f'{self.description}')
         if self.north:
             print(f'The {self.north.name} is north')
         if self.south:

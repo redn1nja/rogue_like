@@ -59,7 +59,7 @@ shevckenka.set_character(lotr)
 batyar = game.Boss(
     'Batyar', 'An rogue who creates a real threat to the whole city')
 batyar.set_conversation('Lvivski Batyary tsila nasha rodyna...')
-batyar.set_weakness(['guitar', 'swiss_knife'])
+batyar.set_weakness(['guitar', 'beer'])
 batyar.set_power('You need two items to defeat this boss')
 krakivska.set_character(batyar)
 
@@ -67,16 +67,18 @@ guitar = game.Item('guitar')
 guitar.set_description('A cool guitar left in one of the UCU basements.')
 kozelnytska.set_item(guitar)
 
-swiss_knife = game.Item('swiss_knife')
-swiss_knife.set_description('A knife bought in Silpo')
-stryiska.set_item(swiss_knife)
+beer = game.Item('beer')
+beer.set_description(
+    '''A bottle of bear which you can use to make someone drunk, or break it by someone's head''')
 
 book = game.Item('book')
 book.set_description('A book about how to get a job')
 shevckenka.set_item(book)
 
 wallet = game.Item('wallet')
-wallet.set_description('A found wallet on the floor')
+wallet.set_description(
+    'A wallet found on the floor. As you already have your own, \
+it may help you to trick the bandits, or help someone in need')
 franka.set_item(wallet)
 
 current_room = kozelnytska

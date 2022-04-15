@@ -52,7 +52,7 @@ while dead == False:
 
     command = input("> ")
 
-    if command in ["north", "south", "east", "west"]:
+    if command in current_room.rooms:
         # Move in the given direction
         current_room = current_room.move(command)
     elif command == "talk":

@@ -9,7 +9,7 @@ stryiska.set_description(
 
 franka = game.Street('Franka Street')
 franka.set_description(
-    'Old historical street with lots of museeums... and lazy people.')
+    'Old historical street with lots of museeums... and great people.')
 shevckenka = game.Street('Shevchenka street')
 shevckenka.set_description(
     'Life is blossoming here - lots of people, lots of cafes, lots of danger')
@@ -179,6 +179,6 @@ while dead == False:
                 print(*inhabitant.weakness)
                 backpack.remove('Intellect')
         else:
-            print('You dont have this power just yet!')
+            print('You dont have this power just yet or you already used one!')
     else:
         print("I don't know how to " + command)

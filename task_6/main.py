@@ -8,24 +8,27 @@ stryiska.set_description(
     '''The street which leads to the most popular place among students - Sil'po''')
 
 franka = game.Street('Franka Street')
-franka.set_description('')
-
+franka.set_description(
+    'Old historical street with lots of museeums... and lazy people.')
 shevckenka = game.Street('Shevchenka street')
-shevckenka.set_description('')
+shevckenka.set_description(
+    'Life is blossoming here - lots of people, lots of cafes, lots of danger')
 
 krakivska = game.Street('Krakivska street')
-krakivska.set_description('')
+krakivska.set_description(
+    '''Called after city, which is in other country, Krakivska is a street\
+ where you definately don't want to go except you are brave and strong and smart''')
 
-kozelnytska.link_room(stryiska, 'west')
-stryiska.link_room(kozelnytska, 'east')
-kozelnytska.link_room(franka, 'north')
-franka.link_room(kozelnytska, 'south')
-franka.link_room(stryiska, 'west')
-stryiska.link_room(franka, 'north')
-stryiska.link_room(shevckenka, 'west')
-shevckenka.link_room(stryiska, 'east')
-shevckenka.link_room(krakivska, 'north')
-krakivska.link_room(shevckenka, 'east')
+kozelnytska.link_street(stryiska, 'west')
+stryiska.link_street(kozelnytska, 'east')
+kozelnytska.link_street(franka, 'north')
+franka.link_street(kozelnytska, 'south')
+franka.link_street(stryiska, 'west')
+stryiska.link_street(franka, 'north')
+stryiska.link_street(shevckenka, 'west')
+shevckenka.link_street(stryiska, 'east')
+shevckenka.link_street(krakivska, 'north')
+krakivska.link_street(shevckenka, 'east')
 
 
 cavalier = game.Friend(
@@ -53,7 +56,8 @@ lotr.set_conversation('Give your wallet here, boy!')
 lotr.set_weakness('wallet')
 shevckenka.set_character(lotr)
 
-batyar=game.Boss('Batyar', 'An rogue who creates a real threat to the whole city')
+batyar = game.Boss(
+    'Batyar', 'An rogue who creates a real threat to the whole city')
 batyar.set_conversation('Lvivski Batyary tsila nasha rodyna...')
 batyar.set_weakness(['guitar', 'swiss_knife'])
 batyar.set_power('You need two items to defeat this boss')
@@ -63,51 +67,17 @@ guitar = game.Item('guitar')
 guitar.set_description('A cool guitar left in one of the UCU basements.')
 kozelnytska.set_item(guitar)
 
-swiss_knife=game.Item('swiss_knife')
+swiss_knife = game.Item('swiss_knife')
 swiss_knife.set_description('A knife bought in Silpo')
 stryiska.set_item(swiss_knife)
 
-book=game.Item('book')
+book = game.Item('book')
 book.set_description('A book about how to get a job')
 shevckenka.set_item(book)
 
-wallet=game.Item('wallet')
+wallet = game.Item('wallet')
 wallet.set_description('A found wallet on the floor')
 franka.set_item(wallet)
-
-
-
-# kitchen = game.Room("Kitchen")
-# kitchen.set_description("A dank and dirty room buzzing with flies.")
-
-# dining_hall = game.Room("Dining Hall")
-# dining_hall.set_description("A large room with ornate golden decorations on each wall.")
-
-# ballroom = game.Room("Ballroom")
-# ballroom.set_description("A vast room with a shiny wooden floor. Huge candlesticks guard the entrance.")
-
-# kitchen.link_room(dining_hall, "south")
-# dining_hall.link_room(kitchen, "north")
-# dining_hall.link_room(ballroom, "west")
-# ballroom.link_room(dining_hall, "east")
-
-# dave = game.Enemy("Dave", "A smelly zombie")
-# dave.set_conversation("What's up, dude! I'm hungry.")
-# dave.set_weakness("cheese")
-# dining_hall.set_character(dave)
-
-# tabitha = game.Enemy("Tabitha", "An enormous spider with countless eyes and furry legs.")
-# tabitha.set_conversation("Sssss....I'm so bored...")
-# tabitha.set_weakness("book")
-# ballroom.set_character(tabitha)
-
-# cheese = game.Item("cheese")
-# cheese.set_description("A large and smelly block of cheese")
-# ballroom.set_item(cheese)
-
-# book = game.Item("book")
-# book.set_description("A really good book entitled 'Knitting for dummies'")
-# dining_hall.set_item(book)
 
 current_room = kozelnytska
 backpack = []
@@ -130,7 +100,7 @@ while dead == False:
 
     command = input("> ")
 
-    if command in ["north", "south", "east", "west"]:
+    if command in current_room.streets:
         # Move in the given direction
         current_room = current_room.move(command)
     elif command == "talk":
@@ -142,47 +112,50 @@ while dead == False:
             backpack.append(inhabitant.give_amplify_to_player())
     elif command == "fight":
         if inhabitant is not None:
-            # Fight with the inhabitant, if there is one
-            print("What will you fight with?")
-            fight_with = input()
+            if isinstance(inhabitant, game.Enemy):
+                # Fight with the inhabitant, if there is one
+                print("What will you fight with?")
+                fight_with = input()
+                # Do I have this item?
+                if fight_with in backpack:
+                    if isinstance(inhabitant, game.Boss):
+                        if inhabitant.fight(fight_with):
+                            if inhabitant.weakness != []:
+                                # What happens if you win?
+                                print("You reduced one health from a boss")
+                            elif inhabitant.weakness == []:
+                                current_room.character = None
+                                print(
+                                    "Congratulations, you have vanquished the enemy and got to Krakivska street!")
+                                dead = True
+                        else:
+                            # What happens if you lose?
+                            print("Oh dear, you lost the fight.")
+                            if res not in backpack:
+                                dead = True
+                                print("That's the end of the game")
+                            else:
+                                print(
+                                    'you have been saved by strength given by Cavalier!')
 
-            # Do I have this item?
-            if fight_with in backpack:
-                if isinstance(inhabitant, game.Boss):
-                    if inhabitant.fight(fight_with):
-                        if inhabitant.weakness != []:
-                        # What happens if you win?
-                            print("You reduced one health from a boss")
-                        elif inhabitant.weakness == []:
+                    else:
+                        if inhabitant.fight(fight_with) == True:
+                            # What happens if you win?
+                            print("Hooray, you won the fight!")
                             current_room.character = None
-                            print("Congratulations, you have vanquished the enemy horde!")
-                            dead = True
-                    else:
-                        # What happens if you lose?
-                        print("Oh dear, you lost the fight.")   
-                        if res not in backpack: 
-                            dead = True
-                            print("That's the end of the game")
                         else:
-                            print('you have been saved by strength given by Cavalier!')
-                
-                else:   
-                    if inhabitant.fight(fight_with) == True:
-                        # What happens if you win?
-                        print("Hooray, you won the fight!")
-                        current_room.character = None
-                    else:
-                        # What happens if you lose?
-                        print("Oh dear, you lost the fight.")
-                        
-                        if res not in backpack: 
-                            dead = True
-                            print("That's the end of the game")
-                        else:
-                            print('you have been saved by strength given by Cavalier!')
-                            backpack.remove(res)
-            else:
-                print("You don't have a " + fight_with)
+                            # What happens if you lose?
+                            print("Oh dear, you lost the fight.")
+
+                            if res not in backpack:
+                                dead = True
+                                print("That's the end of the game")
+                            else:
+                                print(
+                                    'you have been saved by strength given by Cavalier!')
+                                backpack.remove(res)
+                else:
+                    print("You don't have a " + fight_with)
         else:
             print("There is no one here to fight with")
     elif command == "take":
@@ -199,8 +172,10 @@ while dead == False:
         if 'Intellect' in backpack and inhabitant is not None:
             if isinstance(inhabitant.weakness, str):
                 print(inhabitant.weakness)
+                backpack.remove('Intellect')
             else:
                 print(*inhabitant.weakness)
+                backpack.remove('Intellect')
         else:
             print('You dont have this power just yet!')
     else:

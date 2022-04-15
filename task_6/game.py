@@ -9,19 +9,24 @@ class Street:
         self.west = west
         self.character = character
         self.item = item
+        self.streets=[]
 
     def set_description(self, description):
         self.description = description
 
-    def link_room(self, other, direction):
+    def link_street(self, other, direction):
         if direction == 'north':
             self.north = other
+            self.streets.append('north')
         elif direction == 'south':
             self.south = other
+            self.streets.append('south')
         elif direction == 'west':
             self.west = other
+            self.streets.append('west')
         elif direction == 'east':
             self.east = other
+            self.streets.append('east')
 
     def set_character(self, chara):
         self.character = chara
